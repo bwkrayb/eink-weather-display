@@ -1,0 +1,29 @@
+#def centered_text(text: str, y: int, font_size: int = 20, font_name: str = FONT) -> int:
+    """
+    Draws text centered horizontally
+    :param text: str text to be displayed
+    :param y: vertical starting position
+    :param font_size: size of font
+    :param font_name: name of font
+    :return: None
+    """
+    font = ImageFont.truetype(font_name, font_size)
+    avg_char_width: int = sum(font.getsize(char)[0] for char in text) / len(text)
+    number_of_lines = 0
+    for line in text.split('\n'):
+        centered_position = (image.size[0] / 2) - (avg_char_width * len(line) / 2)
+        position = (centered_position, y + (number_of_lines * font_size))
+        text(text, font_size=font_size, font_name=font_name, position=position, wrap=False)
+        number_of_lines += 1
+
+    return number_of_lines
+
+#def paste(image: Image, position: tuple = (0, 0)) -> None:
+        """
+        Paste an image onto the buffer
+        :param image: Image to paste
+        :param position: tuple position to paste at
+        :return: None
+        """
+        image.paste(image, position)
+
