@@ -1,0 +1,117 @@
+import os
+import time
+from libs.function import get_icon, indent, paste 
+from datetime import datetime
+from libs.waveshare_epd import epd2in7
+#from libs.iconLib import get_icon
+from PIL import Image, ImageDraw, ImageFont
+
+pic_dir = '/home/pi/eink-2in7/pics'
+
+img_dir = '/home/pi/eink-2in7/images/jpg/'
+
+FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'
+
+weatherTemp = os.popen('curl -s wttr.in/?format="%f"').read()
+weatherTempShort = weatherTemp.lstrip('+F')
+
+def get_icon():
+    """
+    Get the icon for the current weather
+    :return: Image of the icon
+    """
+    # using wttr.in, just use a simple word search to decide which icon will be used. Needs more testing.
+    dt = datetime.now()
+    weatherIcon = os.popen('curl -s wttr.in/?format="%C"').read().lower()
+    if 5 <= int(dt.strftime('%H')) < 18:
+        if 'sunny' in weatherIcon or 'clear' in weatherIcon:
+            return Image.open(img_dir + "day_clear.jpg")
+        elif 'partly' in weatherIcon:
+            return Image.open("images/jpg/day_partial_cloud.jpg")
+        elif 'overcast' in weatherIcon:
+            return Image.open("images/jpg/overcast.jpg")
+        elif 'cloudy' in weatherIcon:
+            return Image.open("images/jpg/cloudy.jpg")
+        elif 'rain' in weatherIcon:
+            return Image.open("images/jpg/rain.jpg")
+        elif 'fog' in weatherIcon:
+            return Image.open("images/jpg/fog.jpg")
+        elif 'snow' in weatherIcon:
+            return Image.open("images/jpg/day_snow.jpg")
+        else:
+            #logging.info("No icon set for " + weatherIcon)
+            return Image.open("images/jpg/day_clear.jpg")
+    else:
+        if 'clear' in weatherIcon:
+            return Image.open("images/jpg/night_clear.jpg")
+        elif 'cloudy' in weatherIcon:
+            return Image.open("images/jpg/night_partial_cloud.jpg")
+        elif 'rain' in weatherIcon:
+            return Image.open("images/jpg/night_rain.jpg")
+        elif 'snow' in weatherIcon:
+            return Image.open("images/jpg/night_snow.jpg")
+        else:
+            #logging.info("No icon set for " + weatherIcon)
+            return Image.open("images/jpg/night_clear.jpg")
+
+def paste(image: Image, position: tuple = (0, 0)) -> None:
+    """
+    Paste an image onto the buffer
+    :param image: Image to paste
+    :param position: tuple position to paste at
+    :return: None
+    """
+    image.paste(image, position)
+
+
+def indent(input,font):
+    return int((w - font.getsize(input)[0]) / 2)
+
+
+try:
+    # Display init, clear
+    display = epd2in7.EPD()
+    display.init()
+    display.Clear(0) # 0: Black, 255: White
+
+    w = display.height
+    h = display.width
+    #print('width:', w)
+    #print('height:', h)
+
+    #### IMAGE CODE ####
+    tempText = ImageFont.truetype(FONT, 80, index=0)
+    bodyText = ImageFont.truetype(FONT, 30, index=0)
+    timeText = ImageFont.truetype(FONT, 20, index=0)
+    condText = ImageFont.truetype(FONT, 40, index=0)
+    image = Image.new(mode='1', size=(w, h), color=255)
+    draw = ImageDraw.Draw(image)
+    dt = datetime.now()
+    temp = os.popen('curl -s wttr.in/?format="%t"').read()
+    time = dt.strftime('%a %m/%d %I:%M %p')
+    cond = os.popen('curl -s wttr.in/?format="%C"').read()
+    location = 'St Charles, IL'
+    
+    ## used to calculate the size to center condition text ##
+    condSize = condText.getsize(cond)
+    condIndent = int((w - condSize[0]) / 2)
+
+    ## used to calculate the size to center date and time text ##
+    timeSize = timeText.getsize(time)
+    timeIndent = int((w - timeSize[0]) / 2)
+    
+    logo = get_icon()
+    image.paste(logo, (30, 20))
+    
+
+    draw.text((80, 1), temp.strip('+F'), font=tempText, fill=0, align='left')
+    draw.text((indent(cond,condText), 85), cond.title(), font=condText, fill=0, align='left')
+    draw.text((indent(time,timeText), 140), time, font=timeText, fill=0, align='left')
+
+    #draw.text((20, 145), location, font=timeText, fill=0, align='left')
+
+    display.display(display.getbuffer(image))
+
+
+except IOError as e:
+    print(e)
