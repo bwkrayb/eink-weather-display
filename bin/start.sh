@@ -1,3 +1,4 @@
 #!/bin/bash
-cd /home/pi/eink-2in7
-nohup /usr/bin/python3 /home/pi/eink-2in7/weather.py &
+export EINK_HOME='/home/pi/eink-2in7'
+cd $EINK_HOME
+nohup /usr/bin/python3 $EINK_HOME/weather.py > $EINK_HOME/logs/start.out 2>&1 &
