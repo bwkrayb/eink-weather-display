@@ -2,8 +2,11 @@ import datetime
 import os
 import PIL
 import time
+import logging
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
+
+logging.basicConfig(level=logging.INFO,filename='/home/pi/eink-2in7/logs/eink.log')
 
 def get_icon():
     """
@@ -24,12 +27,12 @@ def get_icon():
             return Image.open("images/jpg/cloudy.jpg")
         elif 'rain' in weatherIcon:
             return Image.open("images/jpg/rain.jpg")
-        elif 'fog' in weatherIcon:
-            return Image.open("images/jpg/fog.jpg")
+        elif 'fog' in weatherIcon or 'haze' in weatherIcon:
+            return Image.open("images/jpg/mist.jpg")
         elif 'snow' in weatherIcon:
             return Image.open("images/jpg/day_snow.jpg")
         else:
-            #logging.info("No icon set for " + weatherIcon)
+            logging.info("No icon set for " + weatherIcon)
             return Image.open("images/jpg/day_clear.jpg")
     else:
         if 'clear' in weatherIcon:
@@ -41,7 +44,7 @@ def get_icon():
         elif 'snow' in weatherIcon:
             return Image.open("images/jpg/night_snow.jpg")
         else:
-            #logging.info("No icon set for " + weatherIcon)
+            logging.info("No icon set for " + weatherIcon)
             return Image.open("images/jpg/night_clear.jpg")
 
 def paste(image: Image, position: tuple = (0, 0)) -> None:
