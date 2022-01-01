@@ -27,7 +27,7 @@ def get_icon():
             return Image.open("images/jpg/cloudy.jpg")
         elif 'rain' in weatherIcon:
             return Image.open("images/jpg/rain.jpg")
-        elif 'fog' in weatherIcon or 'haze' in weatherIcon:
+        elif 'fog' in weatherIcon or 'haze' in weatherIcon or 'mist' in weatherIcon:
             return Image.open("images/jpg/mist.jpg")
         elif 'snow' in weatherIcon:
             return Image.open("images/jpg/day_snow.jpg")
