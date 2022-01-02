@@ -48,7 +48,7 @@ try:
     
 
     draw.text((75, 2), temp.strip('+F'), font=tempText, fill=0, align='left')
-    draw.text((indent(cond,condText,w), 95), cond.upper(), font=condText, fill=0, align='left')
+    draw.text((indent(cond,condText,w), 95), cond.title(), font=condText, fill=0, align='left')
     draw.text((indent(time,timeText,w), 150), time, font=timeText, fill=0, align='left')
 
 
