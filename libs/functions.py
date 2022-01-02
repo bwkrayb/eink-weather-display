@@ -18,7 +18,7 @@ def get_icon():
     weatherIcon = os.popen('curl -s wttr.in/?format="%C"').read().lower()
     if 5 <= int(dt.strftime('%H')) < 18:
         if 'sunny' in weatherIcon or 'clear' in weatherIcon:
-            return Image.open(img_dir + "day_clear.jpg")
+            return Image.open("images/jpg/day_clear.jpg")
         elif 'partly' in weatherIcon:
             return Image.open("images/jpg/day_partial_cloud.jpg")
         elif 'overcast' in weatherIcon:
