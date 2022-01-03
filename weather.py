@@ -16,9 +16,6 @@ FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'
 
 #FONT = '/home/pi/eink-2in7/pics/Monoton-Regular.ttf'
 
-weatherTemp = os.popen('curl -s wttr.in/?format="%f"').read()
-weatherTempShort = weatherTemp.lstrip('+F')
-
 try:
     # Display init, clear
     display = epd2in7.EPD()
@@ -41,6 +38,10 @@ try:
     temp = os.popen('curl -s wttr.in/?format="%t"').read()
     time = dt.strftime('%a %m/%d %I:%M %p')
     cond = os.popen('curl -s wttr.in/?format="%C"').read()
+    if w < condText.getsize(cond)[0]:
+        logging.info("Condition " + cond + " is too wide for display. Font size reduced.")
+        condText = ImageFont.truetype(FONT, 30, index=0)
+
     location = 'St Charles, IL'
     
     logo = get_icon()
