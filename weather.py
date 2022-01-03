@@ -27,8 +27,8 @@ try:
 
     w = display.height
     h = display.width
-    #print('width:', w)
-    #print('height:', h)
+    print('width:', w)
+    print('height:', h)
 
     #### IMAGE CODE ####
     tempText = ImageFont.truetype(FONT, 90, index=0)
@@ -47,7 +47,7 @@ try:
     image.paste(logo, (20, 30))
     
 
-    draw.text((75, 2), temp.strip('+F'), font=tempText, fill=0, align='left')
+    draw.text((indent(temp.strip('+F'),tempText,w)+20, 2), temp.strip('+F'), font=tempText, fill=0, align='left')
     draw.text((indent(cond,condText,w), 95), cond.title(), font=condText, fill=0, align='left')
     draw.text((indent(time,timeText,w), 150), time, font=timeText, fill=0, align='left')
 
