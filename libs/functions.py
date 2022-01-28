@@ -3,8 +3,13 @@ import os
 import PIL
 import time
 import logging
+import requests
+import re
+from settings import API_KEY
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
+
+data_dir='/home/pi/eink-2in7/data/'
 
 logging.basicConfig(level=logging.INFO,filename='/home/pi/eink-2in7/logs/eink.log')
 
@@ -59,3 +64,24 @@ def paste(image: Image, position: tuple = (0, 0)) -> None:
 
 def indent(input,font,width):
     return int((width - font.getsize(input)[0]) / 2)
+
+
+
+def write_weather():
+    f = open(data_dir +'weather.json', 'w')
+    lat = "41.902756"
+    lon = "-88.337706"
+    exclude = "minutely,hourly"
+    units = "imperial"
+
+    openWeatherURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&exclude=" + exclude + "&units=" + units + "&appid=" + API_KEY
+
+    response = requests.get(openWeatherURL)
+    responseJson = response.json()
+    responseStr = str(responseJson)
+
+    p = re.compile('(?<!\\\\)\'')
+    finalStr = p.sub('\"', responseStr)
+
+    f.write(finalStr)
+    f.close()

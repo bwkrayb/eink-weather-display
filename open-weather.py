@@ -2,25 +2,18 @@ import os
 import time
 import logging
 import requests
-from libs.functions import get_icon, indent, paste 
+import json
+from libs.functions import get_icon, indent, paste, write_weather 
 from datetime import datetime
 from libs.waveshare_epd import epd2in7
 from PIL import Image, ImageDraw, ImageFont
 from settings import API_KEY
 
 pic_dir = '/home/pi/eink-2in7/pics'
-
+data_dir = '/home/pi/eink-2in7/data/'
 img_dir = '/home/pi/eink-2in7/images/jpg/'
 
 FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'
-
-lat = "41.902756"
-lon = "-88.337706"
-exclude = "minutely,hourly"
-units = "imperial"
-
-openWeatherURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&exclude=" + exclude + "&units=" + units + "&appid=" + API_KEY
-
 
 try:
     # Display init, clear
@@ -42,8 +35,11 @@ try:
     draw = ImageDraw.Draw(image)
     dt = datetime.now()
 
-    response = requests.get(openWeatherURL)
-    responseJson = response.json()
+    write_weather()
+    time.sleep(5)
+    f = open(data_dir + 'weather.json')
+    responseStr = f.read()
+    responseJson = json.loads(responseStr)
     responseCurr = responseJson['current']
 
     curTemp = str(round(responseCurr['temp']))
@@ -53,19 +49,18 @@ try:
     curDesc1 = curDesc[0]
     curDesc2 = curDesc[1] 
 
- 
-    #time = dt.strftime('%a %m/%d %I:%M %p')
-
     logo = get_icon()
     image.paste(logo, (20, 30))
 
     draw.text((indent(curFeel,tempText,w)+20, 2), curFeel, font=tempText, fill=0, align='left')
-    draw.text((indent(curDesc1,condText,w), 95), curDesc1, font=condText, fill=0, align='left')
-    draw.text((indent(curDesc2,condText,w), 150), curDesc2, font=condText, fill=0, align='left')
+    draw.text((indent(curDesc1,condText,w), 90), curDesc1, font=condText, fill=0, align='left')
+    draw.text((indent(curDesc2,condText,w), 130), curDesc2, font=condText, fill=0, align='left')
 
 
     display.display(display.getbuffer(image))
-
+    
+    f.close()
 
 except IOError as e:
     print(e)
+    f.close()
