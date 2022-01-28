@@ -44,12 +44,18 @@ try:
 
     curTemp = str(round(responseCurr['temp']))
     curFeel = str(round(responseCurr['feels_like'])) + '°'
-    curDesc = responseCurr['weather'][0]['description'].title().split(' ')
+    curDesc = responseCurr['weather'][0]['description'].title().split()
+    curID = responseCurr['weather'][0]['id']
 
-    curDesc1 = curDesc[0]
-    curDesc2 = curDesc[1] 
+    if len(curDesc) > 2:
+        custDesc = get_desc(curID).split()
+        curDesc1 = custDesc[0]
+        curDesc2 = custDesc[1]
+    else:
+        curDesc1 = curDesc[0]
+        curDesc2 = curDesc[1] 
 
-    logo = get_icon()
+    logo = get_icon(curID)
     image.paste(logo, (20, 30))
 
     draw.text((indent(curFeel,tempText,w)+20, 2), curFeel, font=tempText, fill=0, align='left')

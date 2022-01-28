@@ -13,51 +13,44 @@ data_dir='/home/pi/eink-2in7/data/'
 
 logging.basicConfig(level=logging.INFO,filename='/home/pi/eink-2in7/logs/eink.log')
 
-
-def get_icon(weatherID):
+def get_icon():
     """
     Get the icon for the current weather
     :return: Image of the icon
     """
+    # using wttr.in, just use a simple word search to decide which icon will be used. Needs more testing.
     dt = datetime.now()
-    thunder = (200,201,202,210,211,212,221,230,231,232)
-    drizzle = (300,301,301,310,311,312,313,314)
-    lightRain = (500,520)
-    heavyRain = (501,502,503,504,511,521,522,531)
-    snow = (600,601,602,611,612,613,615,616,620,621,622)
-    fogMist = (701,721,741)
-    ptCloud = (801,802,803)
-    clear = (800,999)
-    cloudy = (804,998)
+    weatherIcon = os.popen('curl -s wttr.in/?format="%C"').read().lower()
     if 5 <= int(dt.strftime('%H')) < 18:
-        if weatherID in clear:
+        if 'sunny' in weatherIcon or 'clear' in weatherIcon:
             return Image.open("images/jpg/day_clear.jpg")
-        elif weatherID in ptCloud:
+        elif 'partly' in weatherIcon:
             return Image.open("images/jpg/day_partial_cloud.jpg")
-        elif weatherID in cloudy:
+        elif 'overcast' in weatherIcon:
+            return Image.open("images/jpg/overcast.jpg")
+        elif 'cloudy' in weatherIcon:
             return Image.open("images/jpg/cloudy.jpg")
-        elif weatherID in lightRain:
+        elif 'rain' in weatherIcon:
             return Image.open("images/jpg/rain.jpg")
-        elif weatherID in fogMist:
+        elif 'fog' in weatherIcon or 'haze' in weatherIcon or 'mist' in weatherIcon:
             return Image.open("images/jpg/mist.jpg")
-        elif weatherID in snow:
+        elif 'snow' in weatherIcon:
             return Image.open("images/jpg/day_snow.jpg")
         else:
-            logging.info("No icon set for " + str(weatherID))
+            logging.info("No icon set for " + weatherIcon)
             return Image.open("images/jpg/day_clear.jpg")
     else:
-        if weatherIcon == clear:
+        if 'clear' in weatherIcon:
             return Image.open("images/jpg/night_clear.jpg")
-        if weatherIcon in ptCloud:            
+        elif 'cloudy' in weatherIcon:
             return Image.open("images/jpg/night_partial_cloud.jpg")
-        if weatherIcon in lightRain:
+        elif 'rain' in weatherIcon:
             return Image.open("images/jpg/night_rain.jpg")
-        if weatherIcon in snow:
+        elif 'snow' in weatherIcon:
             return Image.open("images/jpg/night_snow.jpg")
         else:
-            logging.info("No icon set for " + str(weatherID))
+            logging.info("No icon set for " + weatherIcon)
             return Image.open("images/jpg/night_clear.jpg")
-
 
 def paste(image: Image, position: tuple = (0, 0)) -> None:
     """
@@ -92,34 +85,3 @@ def write_weather():
 
     f.write(finalStr)
     f.close()
-
-
-def get_desc(curID):
-    thunderStr = "Thunder Storm"
-    thunder = (200,201,202,230,231,232)
-    drizzleStr = "Drizzle"
-    drizzle = (300,302,310,312,313,314)
-    heavyRainStr = "Heavy Rain"
-    heavyRain = (502,503,522,531)
-    lightRainStr = "Light Rain"
-    lightRain = (520)
-    sleetStr = "Snow Rain"
-    sleet = (612,615,616)
-    shSnowStr = "Snow Shower"
-    shSnow = (620,622) 
-    if curID in thunder:
-        return thunderStr
-    elif curID in drizzle:
-        return drizzleStr
-    elif curID in heavyRain:
-        return heavyRainStr
-    elif curID in lightRain:
-        return lightRainStr
-    elif curID in sleet:
-        return sleetStr
-    elif curID in shSnow:
-        return shSnowStr
-    else:
-        return "No Label?"
-
-

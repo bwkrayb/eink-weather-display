@@ -3,16 +3,8 @@ import os
 import PIL
 import time
 import logging
-import requests
-import re
-from settings import API_KEY
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
-
-data_dir='/home/pi/eink-2in7/data/'
-
-logging.basicConfig(level=logging.INFO,filename='/home/pi/eink-2in7/logs/eink.log')
-
 
 def get_icon(weatherID):
     """
@@ -57,69 +49,5 @@ def get_icon(weatherID):
         else:
             logging.info("No icon set for " + str(weatherID))
             return Image.open("images/jpg/night_clear.jpg")
-
-
-def paste(image: Image, position: tuple = (0, 0)) -> None:
-    """
-    Paste an image onto the buffer
-    :param image: Image to paste
-    :param position: tuple position to paste at
-    :return: None
-    """
-    image.paste(image, position)
-
-
-def indent(input,font,width):
-    return int((width - font.getsize(input)[0]) / 2)
-
-
-
-def write_weather():
-    f = open(data_dir +'weather.json', 'w')
-    lat = "41.902756"
-    lon = "-88.337706"
-    exclude = "minutely,hourly"
-    units = "imperial"
-
-    openWeatherURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&exclude=" + exclude + "&units=" + units + "&appid=" + API_KEY
-
-    response = requests.get(openWeatherURL)
-    responseJson = response.json()
-    responseStr = str(responseJson)
-
-    p = re.compile('(?<!\\\\)\'')
-    finalStr = p.sub('\"', responseStr)
-
-    f.write(finalStr)
-    f.close()
-
-
-def get_desc(curID):
-    thunderStr = "Thunder Storm"
-    thunder = (200,201,202,230,231,232)
-    drizzleStr = "Drizzle"
-    drizzle = (300,302,310,312,313,314)
-    heavyRainStr = "Heavy Rain"
-    heavyRain = (502,503,522,531)
-    lightRainStr = "Light Rain"
-    lightRain = (520)
-    sleetStr = "Snow Rain"
-    sleet = (612,615,616)
-    shSnowStr = "Snow Shower"
-    shSnow = (620,622) 
-    if curID in thunder:
-        return thunderStr
-    elif curID in drizzle:
-        return drizzleStr
-    elif curID in heavyRain:
-        return heavyRainStr
-    elif curID in lightRain:
-        return lightRainStr
-    elif curID in sleet:
-        return sleetStr
-    elif curID in shSnow:
-        return shSnowStr
-    else:
-        return "No Label?"
 
 
