@@ -51,16 +51,19 @@ try:
         custDesc = get_desc(curID).split()
         curDesc1 = custDesc[0]
         curDesc2 = custDesc[1]
-    else:
+    elif len(curDesc) == 2:
         curDesc1 = curDesc[0]
-        curDesc2 = curDesc[1] 
+        curDesc2 = curDesc[1]
+    else:
+        curDesc1 = curDesc[0] 
 
     logo = get_icon(curID)
     image.paste(logo, (20, 30))
 
     draw.text((indent(curFeel,tempText,w)+20, 2), curFeel, font=tempText, fill=0, align='left')
     draw.text((indent(curDesc1,condText,w), 90), curDesc1, font=condText, fill=0, align='left')
-    draw.text((indent(curDesc2,condText,w), 130), curDesc2, font=condText, fill=0, align='left')
+    if len(curDesc) > 1:
+        draw.text((indent(curDesc2,condText,w), 130), curDesc2, font=condText, fill=0, align='left')
 
 
     display.display(display.getbuffer(image))

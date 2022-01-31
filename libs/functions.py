@@ -46,13 +46,13 @@ def get_icon(weatherID):
             logging.info("No icon set for " + str(weatherID))
             return Image.open("images/jpg/day_clear.jpg")
     else:
-        if weatherIcon == clear:
+        if weatherID in clear:
             return Image.open("images/jpg/night_clear.jpg")
-        if weatherIcon in ptCloud:            
+        if weatherID in ptCloud or weatherID in cloudy:            
             return Image.open("images/jpg/night_partial_cloud.jpg")
-        if weatherIcon in lightRain:
+        if weatherID in lightRain:
             return Image.open("images/jpg/night_rain.jpg")
-        if weatherIcon in snow:
+        if weatherID in snow:
             return Image.open("images/jpg/night_snow.jpg")
         else:
             logging.info("No icon set for " + str(weatherID))
