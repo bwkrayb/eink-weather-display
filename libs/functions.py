@@ -43,7 +43,7 @@ def get_icon(weatherID):
         elif weatherID in snow:
             return Image.open("images/jpg/day_snow.jpg")
         else:
-            logging.info("No icon set for " + str(weatherID))
+            logging.info(dt.strftime('%x-%X') + ":No icon set for " + str(weatherID))
             return Image.open("images/jpg/day_clear.jpg")
     else:
         if weatherID in clear:
@@ -55,7 +55,7 @@ def get_icon(weatherID):
         if weatherID in snow:
             return Image.open("images/jpg/night_snow.jpg")
         else:
-            logging.info("No icon set for " + str(weatherID))
+            logging.info(dt.strftime('%x-%X') + ":No icon set for " + str(weatherID))
             return Image.open("images/jpg/night_clear.jpg")
 
 
@@ -95,6 +95,7 @@ def write_weather():
 
 
 def get_desc(curID):
+    dt = datetime.now()
     thunderStr = "Thunder Storm"
     thunder = (200,201,202,230,231,232)
     drizzleStr = "Drizzle"
@@ -120,6 +121,7 @@ def get_desc(curID):
     elif curID in shSnow:
         return shSnowStr
     else:
+        logging.info(dt.strftime('%x-%X') + ":No label set for " + str(weatherID))
         return "No Label?"
 
 
