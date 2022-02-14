@@ -42,7 +42,7 @@ try:
     responseJson = json.loads(responseStr)
     responseCurr = responseJson['current']
 
-    curTemp = str(round(responseCurr['temp']))
+    curTemp = str(round(responseCurr['temp'])) + '°'
     curFeel = str(round(responseCurr['feels_like'])) + '°'
     curDesc = responseCurr['weather'][0]['description'].title().split()
     curID = responseCurr['weather'][0]['id']
@@ -60,7 +60,7 @@ try:
     logo = get_icon(curID)
     image.paste(logo, (20, 30))
 
-    draw.text((indent(curFeel,tempText,w)+20, 2), curFeel, font=tempText, fill=0, align='left')
+    draw.text((indent(curTemp,tempText,w)+20, 2), curTemp, font=tempText, fill=0, align='left')
     draw.text((indent(curDesc1,condText,w), 90), curDesc1, font=condText, fill=0, align='left')
     if len(curDesc) > 1:
         draw.text((indent(curDesc2,condText,w), 130), curDesc2, font=condText, fill=0, align='left')
