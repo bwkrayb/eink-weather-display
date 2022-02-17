@@ -3,7 +3,7 @@ import time
 import logging
 import requests
 import json
-from libs.functions import get_icon, indent, paste, write_weather 
+from libs.functions import get_icon, indent, paste, write_weather, get_desc 
 from datetime import datetime
 from libs.waveshare_epd import epd2in7
 from PIL import Image, ImageDraw, ImageFont
